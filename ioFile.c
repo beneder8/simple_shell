@@ -136,7 +136,7 @@ int _renmbrHist(info_t *shellInfo)
 
 	while (node)
 	{
-		node->num = i++;
+		node->nmbr = i++;
 		node = node->next;
 	}
 	return (shellInfo->histcount = i);

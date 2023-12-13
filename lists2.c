@@ -67,7 +67,7 @@ size_t _prntList(const list_t *fnode)
 
 	while (fnode)
 	{
-		_putStr(_cnvrtNmbr(fnode->num, 10, 0));
+		_putStr(_cnvrtNmbr(fnode->nmbr, 10, 0));
 		_putChar(':');
 		_putChar(' ');
 		_putStr(fnode->str ? fnode->str : "(nil)");
