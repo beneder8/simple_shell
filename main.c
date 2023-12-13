@@ -1,44 +1,103 @@
 #include "shell.h"
 
 /**
- * main - entry point
- * @argcnt: arg count
- * @argvctr: arg vector
+ * main - Entry point for the shell program
  *
- * Return: 0 on success, 1 on error
+ * Return: Returns 0 on success, or status of the non_interactive_mode
  */
-int main(int argcnt, char **argvctr)
+int main(void)
 {
-	info_t shellInfo[] = { INFO_INIT };
-	int fd = 2;
+	size_t size_line = 0;
+	char *line = NULL;
+	int status = 0;
 
-	asm ("mov %1, %0\n\t"
-		"add $3, %0"
-		: "=r" (fd)
-		: "r" (fd));
-
-	if (argcnt == 2)
+	if (!isatty(0))
 	{
-		fd = open(argvctr[1], O_RDONLY);
-		if (fd == -1)
+		while (getline(&line, &size_line, stdin) != -1)
 		{
-			if (errno == EACCES)
-				exit(126);
-			if (errno == ENOENT)
-			{
-				_printErrorStr(argvctr[0]);
-				_printErrorStr(": 0: Can't open ");
-				_printErrorStr(argvctr[1]);
-				_printErrorChar('\n');
-				_printErrorChar(BUF_FLUSH);
-				exit(127);
-			}
-			return (EXIT_FAILURE);
+			non_interactive_mode(line, &status);
 		}
-		shellInfo->readfd = fd;
+		if (line)
+		{
+			free(line);
+			line = NULL;
+		}
+		return (status);
 	}
-	_pptEnvList(shellInfo);
-	_readHist(shellInfo);
-	hsh(shellInfo, argvctr);
-	return (EXIT_SUCCESS);
+	debut_shell();
+	return (0);
+}
+/**
+ * non_interactive_mode - Executes shell commands in non_nteractive_mode
+ * @token: The string containing commands separated by newline characters
+ * @status: integer store the number
+ * Return: Returns status.
+ */
+void non_interactive_mode(char *token, int *status)
+{
+	char **single_command;
+	char *envp[] = {NULL};
+
+	token[strlen(token) - 1] = '\0';
+	single_command = tokenize_string(token, " \t");
+	if (single_command[0])
+	{
+		if (!_strcmp(single_command[0], "exit"))
+		{
+			if (single_command[1])
+			{
+				int my_status = _atoi(single_command[1]);
+
+				handle_exit_status(my_status, single_command, &token, status);
+			}
+			else
+			{
+				free(token);
+				free_array(single_command);
+				exit(*status);
+			}
+		}
+		else if (!_strcmp(single_command[0], "env"))
+		{
+			print_env_var();
+			*status = 0;
+		}
+		else
+		_execvep(single_command, envp, status);
+	}
+	free_array(single_command);
+}
+
+/**
+ * tokenize_string - Splits a string into tokens
+ * @str: The string to tokenize
+ * @delimiters: The delimiters to use for tokenization
+ *
+ * Return: Returns result.
+ */
+char **tokenize_string(char *str, char *delimiters)
+{
+	int count = 0;
+	char *token;
+	char **result = malloc(20 * sizeof(char *));
+
+	if (result == NULL)
+	{
+		perror("malloc");
+		exit(EXIT_FAILURE);
+	}
+	token = strtok(str, delimiters);
+	while (token != NULL)
+	{
+		result[count] = _strdup(token);
+		count++;
+		token = strtok(NULL, delimiters);
+	}
+	while (count < 20)
+	{
+		result[count] = NULL;
+		count++;
+	}
+
+	return (result);
 }
