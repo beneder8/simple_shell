@@ -57,10 +57,10 @@ char *starts_with(const char *starter, const char *x)
 
 /**
  * _strcat - concatenates two strings
- * @one: the oneination buffer
+ * @one: the destination buffer
  * @two: the source buffer
  *
- * Return: pointer to oneination buffer
+ * Return: pointer to destination buffer
  */
 char *_strAdd(char *one, char *two)
 {
