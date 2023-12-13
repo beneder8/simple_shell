@@ -1,56 +1,34 @@
-#ifndef MAIN_H
-#define MAIN_H
+#ifndef SHELL_H
+#define SHELL_H
 
 #include <stdio.h>
-#include <unistd.h>
-#include <stddef.h>
-#include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <sys/types.h>
 #include <sys/wait.h>
-#include <errno.h>
+#include <sys/stat.h>
 #include <limits.h>
 #include <fcntl.h>
+#include <errno.h>
 
-int status;
-int andor;
+/* functions_str.c */
+int _showLem(char *);
+int _toCmp(char *, char *);
+char *starts_with(const char *, const char *);
+char *_strAdd(char *, char *);
 
-extern char **environ;
+/* functions_str2.c */
+char *_strmul(char *, char *);
+char *_str_duplicat(const char *);
+void _puts(char *);
+int _putchar(char);
 
-void environcpy(char **myenviron);
+/* functions_str3.c */
+char *_str_copy(char *, char *, int);
+char *_str_concatenated(char *, char *, int);
+char *_strchr(char *, char);
 
-int init_prompt(void);
-int command_check(char **cmd, char **path, char **pths, int path_index, char **myenviron);
-int free_cmd_args(char **cmd, char **args, int free_index);
-int pathfinder(char **path, char **environ);
-int homefinder(char **home, char **environ);
-int oldpwdfinder(char **oldpwd, int *oldpwdindex, char **environ);
-int token_paths(char *path, char **pths);
-int arg_zero_slash_check(char *argzero);
-int if_command_exist(char *argzero);
-int if_path_command_exist(char **pths, char *argzero);
-int not_found(char *argzero, char **cmd, char **args, char **path, char **pths, int path_index);
-int error_check(void);
-int cant_cd(char *foldername);
-int _getline(char **cmd, size_t *len, int file, int fd, char *argvone);
-int summon_tokens(char *cmd, char **args);
-int exit_check(char **cmd, char **args, char **path, char **pths, int args_index, int path_index, char **myenviron);
-int env_check(char **cmd, char **args, char **path, char **pths, int args_index, int path_index, char **myenviron);
-int cd_check(char **cmd, char **args, char **path, char **pths, int args_index, int path_index, char **myenviron);
-int setenv_check(char **cmd, char **args, char **path, char **pths, int args_index, int path_index, char **myenviron);
-int unsetenv_check(char **cmd, char **args, char **path, char **pths, int args_index, int path_index, char **myenviron);
-int builtin_check(char **cmd, char **args, char **path, char **pths, int args_index, int path_index, char **myenviron);
-int write_oldcwd(char *cwd, int oldpwdindex, char **myenviron);
-int dollar_replace(char **cmd);
-void rev_string(char *s);
-char *_itoa(int number);
-void wait_free_error(char **cmd, char **args, int args_index);
-int read_cmd(char **cmd, char **args, char **path, char **pths, int path_index, char **myenviron, int file, int fd, char *argvone);
-
-char *_strcpy(char *dest, char *src);
-int _strcmp(char *s1, char *s2);
-int _unset_strcmp(char *s1, char *s2);
-int _strlen_recursion(char *s);
-char *str_concat(char *s1, char *s2);
-int _atoi(char *s);
-
-#endif
+/* functions_str4.c */
+char **strCheck(char *, char *);
+char **strCheck2(char *, char);
